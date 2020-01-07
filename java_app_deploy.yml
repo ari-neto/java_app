@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+  name: javaapp
+  labels:
+    app: javaapp
+spec:
+  ports:
+  - port: 8080
+    name: javaapp
+    targetPort: 8080
+  selector:
+    app: javaapp
+  type: LoadBalancer
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: javaapp
+  name: javaapp
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: javaapp
+    spec:
+      containers:
+      - name: javaapp
+        image: ECR_BASE/ECR_REPO:java_app
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+
+
